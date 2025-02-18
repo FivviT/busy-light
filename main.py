@@ -1,3 +1,10 @@
-from led_control import random_color_blink
+import json
 
-random_color_blink()
+from net import get_connection
+from server import serve
+
+with open(".config.json") as f:
+    config = json.load(f)
+
+connection = get_connection(config["ssid"], config["password"])
+serve(connection)
