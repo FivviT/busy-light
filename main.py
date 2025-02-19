@@ -1,10 +1,6 @@
-import json
+from config import Config
+from server import Server
 
-from net import get_connection
-from server import serve
-
-with open(".config.json") as f:
-    config = json.load(f)
-
-connection = get_connection(config["ssid"], config["password"])
-serve(connection)
+config = Config()
+server = Server(config)
+server.serve()
