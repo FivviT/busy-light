@@ -33,13 +33,35 @@ class Server:
         print(f"Connected on {ip}")
         return connection
 
-    def webpage(self):
+    def _webpage(self):
         with open("/web/index.html", "r") as file:
             html = file.read()
             html = html.replace("{temperature}", str(esp32.mcu_temperature()))
             html = html.replace("{color}", self.color)
             html = html.replace("{state}", "checked" if self.led_on else "")
+            html = html.replace("{icon_state}", "on" if self.led_on else "off")
+            html = html.replace("{ssid}", self.config.get("ssid"))
+            html = html.replace("{password}", self.config.get("password"))
+            html = html.replace("{leds}", str(self.config.get("leds")))
         return html
+
+    def _extract_path(self, request):
+        try:
+            return request.split()[1]
+        except IndexError:
+            return None
+
+    def _extract_query(self, request):
+        try:
+            return request.split("?")[1].split(" ")[0]
+        except IndexError:
+            return ""
+        
+    def _extract_body_field(self, request, field) -> str:
+        try:
+            return (request.split(field + "=")[1].split(" ")[0]).replace("'", "")
+        except IndexError:
+            return ""
 
 
     def serve(self):
@@ -47,23 +69,29 @@ class Server:
             client = self.connection.accept()[0]
             request = client.recv(1024)
             request = str(request)
-            try:
-                path = request.split()[1]
-            except IndexError:
-                pass
+            path = self._extract_path(request)
             if path == "/lighton?":
                 self.led_control.set_color(self.color)
                 self.led_on = True
             elif path == "/lightoff?":
                 self.led_control.turn_off()
                 self.led_on = False
+            elif path == "/change_wifi":
+                ssid = self._extract_body_field(request, "ssid")
+                password = self._extract_body_field(request, "password")
+                self.config.set("ssid", ssid)
+                self.config.set("password", password)
+            elif path == "./change_leds":
+                leds = self._extract_body_field(request, "leds")
+                self.config.set("leds", leds)
+                self.led_control = led_control.LEDControl(int(leds), self.config.get("pin"))
             elif path == "/change_color":
-                self.color = ("#" + request.split("color=%23")[1].split(" ")[0])[:-1]
+                self.color = self._extract_body_field(request, "color").replace("%23", "#").replace("'", "")
                 self.config.set("color", self.color)
                 if self.led_on:
                     self.led_control.set_color(self.color)
             elif request == "/close?":
                 sys.exit()
-            html = self.webpage()
+            html = self._webpage()
             client.send(html)
             client.close()

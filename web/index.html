@@ -3,13 +3,14 @@
 <head>
     <style>
         body {
-            font-family: Arial, sans-serif;
+            font-family: Roboto, sans-serif;
             background-color: #f0f0f0;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            flex-wrap: wrap;
         }
         .card {
             background-color: #fff;
@@ -18,6 +19,15 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             text-align: center;
             width: 300px;
+            margin: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            height: 400px;
+        }
+        .card h2 {
+            font-size: 24px;
+            margin-bottom: 20px;
         }
         form {
             margin: 20px 0;
@@ -61,8 +71,8 @@
         input:checked + .slider:before {
             transform: translateX(26px);
         }
-        input[type="submit"] {
-            padding: 10px 20px;
+        input[type="submit"], input[type="color"], input[type="number"], input[type="text"], input[type="password"] {
+            padding: 10px;
             font-size: 16px;
             margin: 10px;
             cursor: pointer;
@@ -70,22 +80,52 @@
             border-radius: 5px;
             background-color: #007BFF;
             color: #fff;
+            height: 40px;
+            box-sizing: border-box;
         }
         input[type="color"] {
             padding: 5px;
             margin: 10px;
             border: none;
             border-radius: 5px;
-            cursor: pointer;
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ccc;
+        }
+        input[type="color"]::-webkit-color-swatch-wrapper {
+            padding: 0;
+            border-radius: 5px;
+        }
+        input[type="color"]::-webkit-color-swatch {
+            border: none;
+            border-radius: 5px;
+        }
+        input[type="number"], input[type="text"], input[type="password"] {
+            background-color: #fff;
+            color: #000;
+            border: 1px solid #ccc;
         }
         p {
             font-size: 18px;
             margin: 10px 0;
         }
+        .btn {
+            background-color: #007BFF;
+            color: #fff;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
     <div class="card">
+        <h2>Light Control</h2>
         <form action="./lighton" id="light-form">
             <label class="switch">
                 <input type="checkbox" id="light-switch" onchange="toggleLight()" {state}>
@@ -95,7 +135,25 @@
         <form action="./change_color" method="post">
             <input type="color" name="color" value="{color}" onchange="form.submit()"/>
         </form>
-        <p>Temperature is {temperature}</p>
+    </div>
+    <div class="card">
+        <h2>System</h2>
+        <p>Temperature: {temperature} C</p>
+        <form action="./change_leds_count" method="post">
+            <p>LEDs Count</p>
+            <input type="number" name="leds_count" placeholder="LEDs Count" value="{leds}" required>
+            <input type="submit" value="Save" class="btn">
+        </form>
+    </div>
+    <div class="card">
+        <h2>WI-FI</h2>
+        <form action="./change_wifi" method="post">
+            <p>SSID</p>
+            <input type="text" name="ssid" placeholder="SSID" value="{ssid}" required>
+            <p>Password</p>
+            <input type="password" name="password" placeholder="Password" value="{password}" required>
+            <input type="submit" value="Save" class="btn">
+        </form>
     </div>
     <script>
         function toggleLight() {
