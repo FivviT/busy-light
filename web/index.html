@@ -1,159 +1,86 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-    <style>
-        body {
-            font-family: Roboto, sans-serif;
-            background-color: #f0f0f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            flex-wrap: wrap;
-        }
-        .card {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            width: 300px;
-            margin: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            height: 400px;
-        }
-        .card h2 {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        form {
-            margin: 20px 0;
-        }
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 60px;
-            height: 34px;
-        }
-        .switch input {
-            opacity: 0;
-            width: 0;
-            height: 0;
-        }
-        .slider {
-            position: absolute;
-            cursor: pointer;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background-color: #ccc;
-            transition: .4s;
-            border-radius: 34px;
-        }
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 26px;
-            width: 26px;
-            left: 4px;
-            bottom: 4px;
-            background-color: white;
-            transition: .4s;
-            border-radius: 50%;
-        }
-        input:checked + .slider {
-            background-color: #28a745;
-        }
-        input:checked + .slider:before {
-            transform: translateX(26px);
-        }
-        input[type="submit"], input[type="color"], input[type="number"], input[type="text"], input[type="password"] {
-            padding: 10px;
-            font-size: 16px;
-            margin: 10px;
-            cursor: pointer;
-            border: none;
-            border-radius: 5px;
-            background-color: #007BFF;
-            color: #fff;
-            height: 40px;
-            box-sizing: border-box;
-        }
-        input[type="color"] {
-            padding: 5px;
-            margin: 10px;
-            border: none;
-            border-radius: 5px;
-            background-color: #fff;
-            color: #000;
-            border: 1px solid #ccc;
-        }
-        input[type="color"]::-webkit-color-swatch-wrapper {
-            padding: 0;
-            border-radius: 5px;
-        }
-        input[type="color"]::-webkit-color-swatch {
-            border: none;
-            border-radius: 5px;
-        }
-        input[type="number"], input[type="text"], input[type="password"] {
-            background-color: #fff;
-            color: #000;
-            border: 1px solid #ccc;
-        }
-        p {
-            font-size: 18px;
-            margin: 10px 0;
-        }
-        .btn {
-            background-color: #007BFF;
-            color: #fff;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        .btn:hover {
-            background-color: #0056b3;
-        }
-    </style>
+    <!-- Specify character encoding -->
+    <meta charset="UTF-8">
+    <!-- Import Materialize CSS -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
 </head>
-<body>
-    <div class="card">
-        <h2>Light Control</h2>
-        <form action="./lighton" id="light-form">
-            <label class="switch">
-                <input type="checkbox" id="light-switch" onchange="toggleLight()" {state}>
-                <span class="slider"></span>
-            </label>
-        </form>
-        <form action="./change_color" method="post">
-            <input type="color" name="color" value="{color}" onchange="form.submit()"/>
-        </form>
-    </div>
-    <div class="card">
-        <h2>System</h2>
-        <p>Temperature: {temperature} C</p>
-        <form action="./change_leds_count" method="post">
-            <p>LEDs Count</p>
-            <input type="number" name="leds_count" placeholder="LEDs Count" value="{leds}" required>
-            <input type="submit" value="Save" class="btn">
-        </form>
-    </div>
-    <div class="card">
-        <h2>WI-FI</h2>
-        <form action="./change_wifi" method="post">
-            <p>SSID</p>
-            <input type="text" name="ssid" placeholder="SSID" value="{ssid}" required>
-            <p>Password</p>
-            <input type="password" name="password" placeholder="Password" value="{password}" required>
-            <input type="submit" value="Save" class="btn">
-        </form>
+
+<style>
+    .switch {
+        margin: 15px 0;
+    }
+</style>
+<body class="grey lighten-4">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m6 l4">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Light Control</span>
+                        <div class="row">
+                            <div class="col s6">
+                                <form action="./change_color" method="post">
+                                    <div class="input-field">
+                                        <input type="color" id="color" name="color" value="{color}" onchange="form.submit()" class="browser-default">
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="col s6">
+                                <form action="./lighton" id="light-form">
+                                    <div class="switch">
+                                        <label>
+                                            Off
+                                            <input type="checkbox" id="light-switch" onchange="toggleLight()" {state}>
+                                            <span class="lever"></span>
+                                            On
+                                        </label>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m6 l4">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">WI-FI Settings</span>
+                        <form action="./change_wifi" method="post">
+                            <div class="input-field">
+                                <input type="text" id="ssid" name="ssid" placeholder="SSID" value="{ssid}" required>
+                                <label for="ssid" class="active">SSID</label>
+                            </div>
+                            <div class="input-field">
+                                <input type="password" id="password" name="password" placeholder="Password"
+                                    value="{password}" required>
+                                <label for="password" class="active">Password</label>
+                            </div>
+                            <button type="submit" class="btn waves-effect waves-light blue darken-1">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col s12 m6 l4">
+                <div class="card">
+                    <div class="card-content">
+                        <span class="card-title">Advanced Settings</span>
+                        <p>CPU Temperature: {temperature} °C</p>
+                        <form action="./change_leds_count" method="post">
+                            <div class="input-field">
+                                <input type="number" id="leds_count" name="leds_count" placeholder="LEDs Count"
+                                    value="{leds}" required>
+                                <label for="leds_count" class="active">LEDs Count</label>
+                            </div>
+                            <button type="submit" class="btn waves-effect waves-light blue darken-1">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
     </div>
     <script>
         function toggleLight() {
@@ -167,5 +94,19 @@
             form.submit();
         }
     </script>
+    <style>
+        .switch label input[type=checkbox]:checked+.lever {
+            background-color: #1e88e5;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:before {
+            border-color: #1e88e5;
+        }
+
+        .switch label input[type=checkbox]:checked+.lever:after {
+            background-color: #1e88e5;
+        }
+    </style>
 </body>
+
 </html>
